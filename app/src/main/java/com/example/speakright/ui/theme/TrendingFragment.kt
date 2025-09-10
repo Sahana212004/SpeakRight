@@ -1,4 +1,4 @@
-package com.example.speakright
+package com.example.speakright.ui.theme
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.speakright.R
 
 class TrendingFragment : Fragment() {
 
@@ -19,15 +20,14 @@ class TrendingFragment : Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.recyclerTrending)
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
-        val topics = listOf(
-            TrendingTopic("AI in 2025", "Learn AI buzzwords"),
-            TrendingTopic("Climate Change", "Eco-vocabulary"),
-            TrendingTopic("Sports Update", "Words from today’s match")
+        val trendingTopics = listOf(
+            TrendingTopic("AI in 2025", "Understand AI buzzwords"),
+            TrendingTopic("Climate Change", "Learn eco-related vocabulary"),
+            TrendingTopic("Sports Update", "Get latest sports news")
         )
 
-        recycler.adapter = TrendingAdapter(topics) { topic ->
-            // handle click
-        }
+        val adapter = TrendingAdapter(trendingTopics)
+        recycler.adapter = adapter
 
         return view
     }

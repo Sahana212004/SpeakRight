@@ -10,10 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpeakRight">
 
-        <!-- First screen (LoginActivity) -->
+        <!-- ✅ Only one launcher -->
         <activity
             android:name=".SplashActivity"
-            android:exported="true">   <!-- ✅ Added this line -->
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,14 +22,22 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="true">   <!-- ✅ Added this line -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
 
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".DashboardActivity" />
+        <!-- ✅ ProfileActivity fixed -->
+        <activity
+            android:name="com.example.speakright.ui.theme.ProfileActivity"
+            android:exported="true" />
+
+
+        <activity
+            android:name=".DashboardActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <activity android:name=".ui.theme.HomeActivity" />
+        <activity android:name=".ui.theme.TopicDetailActivity" />
+        <activity android:name=".TestActivity"/>
 
     </application>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 </manifest>

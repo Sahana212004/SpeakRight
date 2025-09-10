@@ -1,100 +1,114 @@
-package com.example.speakright
+package com.example.speakright.ui.theme
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import android.widget.Switch
+import com.example.speakright.DashboardActivity
+import com.example.speakright.R
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var profileImage: ImageView
-    private lateinit var editButton: ImageButton
+    private lateinit var etFirstName: EditText
+    private lateinit var etLastName: EditText
+    private lateinit var etPhone: EditText
+    private lateinit var btnSave: Button
     private lateinit var settingsButton: ImageButton
-    private val PICK_IMAGE = 1
+
+    private var userPhotoUri: Uri? = null
+
+    private lateinit var sharedPref: SharedPreferences
+
+    companion object {
+        const val PICK_IMAGE_REQUEST = 1
+        const val PREFS_NAME = "theme_prefs"
+        const val THEME_KEY = "app_theme"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Load saved theme
+        sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val isDarkMode = sharedPref.getBoolean(THEME_KEY, false)
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
         profileImage = findViewById(R.id.profileImage)
-        editButton = findViewById(R.id.editButton)
+        etFirstName = findViewById(R.id.etFirstName)
+        etLastName = findViewById(R.id.etLastName)
+        etPhone = findViewById(R.id.etPhone)
+        btnSave = findViewById(R.id.btnSave)
         settingsButton = findViewById(R.id.settingsButton)
 
-        // Click on profile image → upload new image
+        // Open gallery to pick image
         profileImage.setOnClickListener {
-            openGallery()
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // Pencil icon → upload new image
-        editButton.setOnClickListener {
-            openGallery()
-        }
-
-        // ⚙️ Settings button → open bottom sheet
+        // Settings button shows toggle dialog
         settingsButton.setOnClickListener {
-            showSettingsBottomSheet()
+            showThemeDialog()
         }
 
-        // ✅ Continue button → go to Dashboard
-        val btnSave = findViewById<Button>(R.id.btnSave)
         btnSave.setOnClickListener {
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
-            finish() // so user can’t return here with back button
+            finish()
         }
     }
 
-    private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, PICK_IMAGE)
+    private fun showThemeDialog() {
+        val switch = Switch(this)
+        switch.isChecked = sharedPref.getBoolean(THEME_KEY, false)
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Select Theme")
+            .setMessage("Enable Dark Mode")
+            .setView(switch)
+            .setPositiveButton("OK") { dialogInterface, _ -> dialogInterface.dismiss() }
+            .create()
+
+        switch.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
+            val editor = sharedPref.edit()
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                editor.putBoolean(THEME_KEY, true)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                editor.putBoolean(THEME_KEY, false)
+            }
+            editor.apply()
+        }
+
+        dialog.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            val selectedImage: Uri? = data.data
-            profileImage.setImageURI(selectedImage)
-        }
-    }
-
-    // ⬇️ Settings bottom sheet with dark mode toggle
-    private fun showSettingsBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_settings, null)
-        bottomSheetDialog.setContentView(view)
-
-        val switchTheme = view.findViewById<Switch>(R.id.switchTheme)
-        val sharedPref = getSharedPreferences("AppSettings", MODE_PRIVATE)
-
-        // Load saved theme state
-        val isDarkMode = sharedPref.getBoolean("DarkMode", false)
-        switchTheme.isChecked = isDarkMode
-
-        switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                saveTheme(true)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                saveTheme(false)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            data?.data?.let { uri ->
+                userPhotoUri = uri
+                profileImage.setImageURI(uri)
             }
-            bottomSheetDialog.dismiss()
         }
-
-        bottomSheetDialog.show()
-    }
-
-    private fun saveTheme(isDarkMode: Boolean) {
-        val editor = getSharedPreferences("AppSettings", MODE_PRIVATE).edit()
-        editor.putBoolean("DarkMode", isDarkMode)
-        editor.apply()
     }
 }

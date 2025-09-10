@@ -10,57 +10,18 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Food Level -->
+        <!-- Take Test Option -->
         <TextView
+            android:id="@+id/tvTakeTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="100dp"
             android:background="#EEEBDF"
-            android:text="Food"
+            android:text="Take Test"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp"
             android:gravity="center" />
-
-        <!-- Animals Level -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="#EEEBDF"
-            android:text="Animals"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"
-            android:gravity="center" />
-
-        <!-- Conversation Level -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="#EEEBDF"
-            android:text="Conversation"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"
-            android:gravity="center" />
-
-        <!-- Economics Level -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="#EEEBDF"
-            android:text="Economics"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"
-            android:gravity="center" />
-
     </LinearLayout>
 </ScrollView>
