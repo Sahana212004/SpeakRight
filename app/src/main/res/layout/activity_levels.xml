@@ -1,0 +1,129 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5EFFF"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- 🔥 Streak -->
+        <TextView
+            android:id="@+id/tvStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔥 Streak: 0"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Levels with dotted path -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Level 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_marginVertical="8dp">
+                <Button
+                    android:id="@+id/btnLevel1"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/level_circle"
+                    android:text="1"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <com.example.speakright.ui.theme.DottedPathView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <!-- Level 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginVertical="8dp">
+                <Button
+                    android:id="@+id/btnLevel2"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/level_circle"
+                    android:text="2"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <com.example.speakright.ui.theme.DottedPathView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <!-- Level 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_marginVertical="8dp">
+                <Button
+                    android:id="@+id/btnLevel3"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/level_circle"
+                    android:text="3"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <com.example.speakright.ui.theme.DottedPathView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <!-- Level 4 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginVertical="8dp">
+                <Button
+                    android:id="@+id/btnLevel4"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/level_circle"
+                    android:text="4"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <com.example.speakright.ui.theme.DottedPathView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <!-- Level 5 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_marginVertical="8dp">
+                <Button
+                    android:id="@+id/btnLevel5"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/level_circle"
+                    android:text="5"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

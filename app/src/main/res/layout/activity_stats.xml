@@ -1,0 +1,13 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F6F8FF">
+
+    <TextView
+        android:text="Stats Page"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#2C3250"/>
+</LinearLayout>

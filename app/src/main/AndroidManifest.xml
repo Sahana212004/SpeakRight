@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.speakright">
 
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpeakRight">
 
-        <!-- ✅ Only one launcher -->
+        <!-- SplashActivity -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -20,24 +24,65 @@
             </intent-filter>
         </activity>
 
+        <!-- LoginActivity -->
+        <activity android:name=".LoginActivity" android:exported="true" />
+
+        <!-- ProfileActivity -->
+        <activity android:name=".ui.theme.ProfileActivity" android:exported="true" />
+
+        <!-- DashboardActivity -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.theme.DashboardActivity"
+            android:theme="@style/Theme.SpeakRight.Material"
             android:exported="true" />
 
-        <!-- ✅ ProfileActivity fixed -->
-        <activity
-            android:name="com.example.speakright.ui.theme.ProfileActivity"
-            android:exported="true" />
 
-
+        <!-- LevelsActivity -->
         <activity
-            android:name=".DashboardActivity"
+            android:name=".ui.theme.LevelsActivity"
             android:theme="@style/Theme.SpeakRight.Material" />
 
-        <activity android:name=".ui.theme.HomeActivity" />
-        <activity android:name=".ui.theme.TopicDetailActivity" />
-        <activity android:name=".TestActivity"/>
+        <!-- PracticeActivity -->
+        <activity
+            android:name=".ui.theme.PracticeActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <!-- PronunciationActivity -->
+        <activity
+            android:name=".ui.theme.PronunciationPracticeActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <activity
+            android:name=".ui.theme.SpeakingPracticeActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <!-- StatsActivity -->
+        <activity
+            android:name=".ui.theme.StatsActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <!-- NotificationsActivity -->
+        <activity
+            android:name=".ui.theme.NotificationsActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <activity
+            android:name=".ui.theme.FeedbackActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <!-- UserDetailsActivity -->
+        <activity
+            android:name=".ui.theme.UserDetailsActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <!-- LevelDetailActivity -->
+        <activity
+            android:name=".ui.theme.LevelDetailActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
+
+        <activity
+            android:name=".ui.theme.GrammarPracticeActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
 
     </application>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 </manifest>

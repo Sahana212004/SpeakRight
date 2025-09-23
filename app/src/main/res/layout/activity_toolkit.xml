@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnQuiz"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Quiz"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/btnDictation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Dictation"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/btnPractice"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Practice"
+        android:layout_marginTop="20dp"/>
+</LinearLayout>

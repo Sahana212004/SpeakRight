@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#F6F8FF"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dictation Practice"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#2C3250"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tvDictationInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Listen carefully and type what you hear."
+        android:textSize="16sp"
+        android:textColor="#555"
+        android:layout_marginBottom="20dp" />
+
+    <EditText
+        android:id="@+id/etDictationInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type here..."
+        android:background="@drawable/rounded_edittext"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btnSubmitDictation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:backgroundTint="#2C365A"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

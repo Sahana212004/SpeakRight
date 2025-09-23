@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#F6F8FF">
+
+    <!-- Page Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="We Value Your Feedback"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#2C3250"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Star Rating -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rate our app:"
+        android:textSize="16sp"
+        android:textColor="#2C3250"
+        android:layout_marginBottom="8dp"/>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        style="@style/Widget.AppCompat.RatingBar.Small"/>
+
+    <!-- Feedback Input -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your feedback:"
+        android:textSize="16sp"
+        android:textColor="#2C3250"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etFeedback"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/feedback_edittext_bg"
+        android:hint="Write your thoughts here..."
+        android:padding="16dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit Feedback"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#4A90E2"
+        android:padding="12dp"
+        android:textAllCaps="false"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+</LinearLayout>

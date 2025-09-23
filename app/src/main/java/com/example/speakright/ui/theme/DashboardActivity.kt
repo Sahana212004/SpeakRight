@@ -1,16 +1,14 @@
-package com.example.speakright
+package com.example.speakright.ui.theme
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.animation.AnimationUtils
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import java.time.Duration
-import com.example.speakright.ui.theme.NotificationWorker
-import com.example.speakright.ui.theme.TrendingFragment
+import com.airbnb.lottie.LottieAnimationView
+import com.example.speakright.R
+import com.google.android.material.card.MaterialCardView
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -18,80 +16,44 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        // Play welcome Lottie animation
+        findViewById<LottieAnimationView>(R.id.lottieWelcome).playAnimation()
 
-        // Load Home (Trending) by default
-        if (savedInstanceState == null) {
-            loadFragment(TrendingFragment())
-            bottomNav.selectedItemId = R.id.nav_home
-        }
-
-        // Bottom navigation listener
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    loadFragment(TrendingFragment())
-                    true
-                }
-                R.id.nav_levels -> {
-                    loadFragment(LevelsFragment())
-                    true
-                }
-                R.id.nav_notifications -> {
-                    loadFragment(NotificationsFragment())
-                    true
-                }
-                R.id.nav_profile -> {
-                    loadFragment(UserProfileFragment()) // ← New fragment for user details
-                    true
-                }
-                else -> false
-            }
-        }
-
-        // Schedule background notifications
-        scheduleNotifications()
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
-    }
-
-    private fun scheduleNotifications() {
-        // Periodic WorkManager request
-        val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            Duration.ofHours(1) // Change to Duration.ofMinutes(15) for testing
-        ).build()
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "SpeakRightHourlyNotifications",
-            ExistingPeriodicWorkPolicy.KEEP,
-            workRequest
+        // Animate welcome TextView
+        findViewById<TextView>(R.id.tvWelcome).startAnimation(
+            AnimationUtils.loadAnimation(this, R.anim.slide_up)
         )
-    }
 
-    override fun onResume() {
-        super.onResume()
-        updateNotificationBadge()
-    }
+        // Initialize cards
+        val cardHome = findViewById<MaterialCardView>(R.id.cardHome)
+        val cardLevels = findViewById<MaterialCardView>(R.id.cardLevels)
+        val cardFeedback = findViewById<MaterialCardView>(R.id.cardFeedback)
+        val cardProfile = findViewById<MaterialCardView>(R.id.cardProfile)
 
-    private fun updateNotificationBadge() {
-        val prefs = getSharedPreferences("AppNotifications", Context.MODE_PRIVATE)
-        val count = prefs.getInt("notif_count", 0)
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        // Apply slide-up animation to all cards
+        listOf(cardHome, cardLevels, cardFeedback, cardProfile).forEach { card ->
+            card.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_up))
+        }
 
-        try {
-            if (count > 0) {
-                val badge = bottomNav.getOrCreateBadge(R.id.nav_notifications)
-                badge.number = count
-            } else {
-                bottomNav.removeBadge(R.id.nav_notifications)
-            }
-        } catch (e: IllegalArgumentException) {
-            // Avoid crash if theme is not MaterialComponents
-            e.printStackTrace()
+        // Set click listeners
+        cardHome.setOnClickListener {
+            Toast.makeText(this, "Opening Tool Box...", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, PracticeActivity::class.java))
+        }
+
+        cardLevels.setOnClickListener {
+            Toast.makeText(this, "Opening Levels...", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LevelsActivity::class.java))
+        }
+
+        cardFeedback.setOnClickListener {
+            Toast.makeText(this, "Opening Feedback...", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, FeedbackActivity::class.java)) // Replace with your feedback activity
+        }
+
+        cardProfile.setOnClickListener {
+            Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, UserDetailsActivity::class.java))
         }
     }
 }
