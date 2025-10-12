@@ -1,60 +1,58 @@
 package com.example.speakright.ui.theme
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
 import com.example.speakright.R
+import de.hdodenhof.circleimageview.CircleImageView
+import androidx.activity.result.contract.ActivityResultContracts
 
 class ProfileActivity : AppCompatActivity() {
 
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var profilePhoto: ImageView
-    private val PICK_IMAGE = 100
-    private var imageUri: Uri? = null
+    private lateinit var profilePhoto: CircleImageView
+    private lateinit var etFirstName: EditText
+    private lateinit var etLastName: EditText
+    private lateinit var etPhone: EditText
+
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                Glide.with(this)
+                    .load(it)
+                    .circleCrop()
+                    .into(profilePhoto)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        drawerLayout = findViewById(R.id.drawerLayout)
-
-        val settingsButton = findViewById<ImageView>(R.id.settingsButton)
-        val etFirstName = findViewById<EditText>(R.id.etFirstName)
-        val etLastName = findViewById<EditText>(R.id.etLastName)
-        val etPhone = findViewById<EditText>(R.id.etPhone)
-        val btnSave = findViewById<Button>(R.id.btnSave)
+        // Initialize views
         profilePhoto = findViewById(R.id.profilePhoto)
+        etFirstName = findViewById(R.id.etFirstName)
+        etLastName = findViewById(R.id.etLastName)
+        etPhone = findViewById(R.id.etPhone)
+        val btnSave = findViewById<Button>(R.id.btnSave)
 
-        // Open/close settings drawer
-        settingsButton.setOnClickListener {
-            if (!drawerLayout.isDrawerOpen(findViewById(R.id.settingsDrawer))) {
-                drawerLayout.openDrawer(findViewById(R.id.settingsDrawer))
-            } else {
-                drawerLayout.closeDrawer(findViewById(R.id.settingsDrawer))
-            }
-        }
-
-        // Pick profile image
+        // Profile image picker
         profilePhoto.setOnClickListener {
-            val gallery = Intent(Intent.ACTION_PICK)
-            gallery.type = "image/*"
-            startActivityForResult(gallery, PICK_IMAGE)
+            pickImageLauncher.launch("image/*")
         }
 
-        // Save button click
+        // Save button (navigates to Dashboard if fields filled)
         btnSave.setOnClickListener {
             val firstName = etFirstName.text.toString()
             val lastName = etLastName.text.toString()
             val phone = etPhone.text.toString()
 
             if (firstName.isNotEmpty() && lastName.isNotEmpty() && phone.isNotEmpty()) {
-                // Go to Dashboard
                 val intent = Intent(this, DashboardActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                intent.putExtra("USERNAME", "$firstName $lastName")
+                intent.putExtra("PHONE", phone)
                 startActivity(intent)
                 finish()
             } else {
@@ -62,14 +60,6 @@ class ProfileActivity : AppCompatActivity() {
                 if (lastName.isEmpty()) etLastName.error = "Required"
                 if (phone.isEmpty()) etPhone.error = "Required"
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE) {
-            imageUri = data?.data
-            profilePhoto.setImageURI(imageUri)
         }
     }
 }

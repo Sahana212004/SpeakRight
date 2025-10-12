@@ -72,18 +72,6 @@
         android:textColor="#FFFFFF"
         android:layout_marginBottom="15dp" />
 
-    <!-- Google -->
-    <Button
-        android:id="@+id/btnGoogle"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Continue with Google"
-        android:background="#2C365A"
-        android:textColor="#FFFFFF"
-        android:drawableStart="@drawable/google_button_icon"
-        android:paddingStart="12dp"
-        android:gravity="center_vertical" />
-
     <!-- Login -->
     <Button
         android:id="@+id/btnLogin"
