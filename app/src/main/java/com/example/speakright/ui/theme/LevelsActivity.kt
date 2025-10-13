@@ -3,34 +3,33 @@ package com.example.speakright.ui.theme
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.speakright.R
+import com.google.android.material.card.MaterialCardView
 
 class LevelsActivity : AppCompatActivity() {
 
-    private lateinit var tvStreak: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_levels)
+        setContentView(R.layout.activity_levels) // updated to your new levels.xml
 
-        tvStreak = findViewById(R.id.tvStreak)
-        updateStreak()
 
-        val levels = listOf(
-            R.id.btnLevel1, R.id.btnLevel2, R.id.btnLevel3,
-            R.id.btnLevel4, R.id.btnLevel5
+
+        val levelCards = listOf(
+            R.id.cardSimple to "Simple",
+            R.id.cardMedium to "Medium",
+            R.id.cardComplex to "Complex"
         )
 
-        for (levelId in levels) {
-            val btn = findViewById<Button>(levelId)
-            btn.setOnClickListener {
-                // Navigate to LevelDetailActivity instead of just showing Toast
+        for ((cardId, levelName) in levelCards) {
+            val card = findViewById<MaterialCardView>(cardId)
+            card.setOnClickListener {
                 val intent = Intent(this, LevelDetailActivity::class.java)
-                intent.putExtra("LEVEL_NAME", btn.text.toString()) // Pass level name
+                intent.putExtra("LEVEL_NAME", levelName)
                 startActivity(intent)
             }
         }
@@ -52,17 +51,15 @@ class LevelsActivity : AppCompatActivity() {
             else -> streak // opened same day → keep
         }
 
-        // ✅ Always save the last open time and streak count
         prefs.edit()
             .putLong("lastOpenTime", now)
             .putInt("streakCount", newStreak)
             .apply()
 
-        // Show streak popup only if it increased
         if (newStreak > streak) {
             Toast.makeText(this, "🔥 Streak increased to $newStreak!", Toast.LENGTH_SHORT).show()
         }
 
-        tvStreak.text = "🔥 Streak: $newStreak"
+
     }
 }
