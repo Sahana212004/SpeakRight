@@ -1,81 +1,92 @@
 package com.example.speakright.ui.theme
 
+import android.graphics.BitmapFactory
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import com.example.speakright.LoginActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.example.speakright.R
+import com.example.speakright.DatabaseHelper
+import de.hdodenhof.circleimageview.CircleImageView
 
 class UserDetailsActivity : AppCompatActivity() {
 
-    private var isDarkMode = false
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var tvUserName: TextView
+    private lateinit var tvContactInfo: TextView
+    private lateinit var imgProfilePic: CircleImageView
+    private lateinit var btnSignOut: Button
+    private lateinit var btnSettings: ImageView
+    private lateinit var Editbtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
 
-        val imgProfilePic = findViewById<ImageView>(R.id.imgProfilePic)
-        val tvUserName = findViewById<TextView>(R.id.tvUserName)
-        val tvContactInfo = findViewById<TextView>(R.id.tvContactInfo)
-        val tvTerms = findViewById<TextView>(R.id.tvTerms)
-        val tvPrivacy = findViewById<TextView>(R.id.tvPrivacy)
-        val btnSignOut = findViewById<Button>(R.id.btnSignOut)
-        val btnSettings = findViewById<ImageView>(R.id.btnSettings)
+        dbHelper = DatabaseHelper(this)
+        tvUserName = findViewById(R.id.tvUserName)
+        tvContactInfo = findViewById(R.id.tvContactInfo)
+        imgProfilePic = findViewById(R.id.imgProfilePic)
+        btnSignOut = findViewById(R.id.btnSignOut)
+        btnSettings = findViewById(R.id.btnSettings)
 
-        // Static user info (can later be dynamic via Intent extras)
-        tvUserName.text = "John Doe"
-        tvContactInfo.text = "+91 9876543210"
+        // Get the logged-in user's email passed via Intent
+        val userEmail = intent.getStringExtra("email")
 
-        // Settings Button -> Show Dark/Light Mode toggle
-        btnSettings.setOnClickListener {
-            val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
-            val switchTheme = dialogView.findViewById<Switch>(R.id.switchTheme)
-
-            switchTheme.isChecked = isDarkMode
-
-            val dialog = AlertDialog.Builder(this)
-                .setTitle("Settings")
-                .setView(dialogView)
-                .setPositiveButton("OK") { _, _ ->
-                    isDarkMode = switchTheme.isChecked
-                    if (isDarkMode) {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    } else {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    }
-                }
-                .setNegativeButton("Cancel", null)
-                .create()
-            dialog.show()
+        if (userEmail != null) {
+            loadUserData(userEmail)
+        } else {
+            Toast.makeText(this, "Error: No user data found", Toast.LENGTH_SHORT).show()
         }
 
-        // Terms of Service -> Show Dialog
-        tvTerms.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Terms of Service")
-                .setMessage("Here are the terms of service...\n\n1. You must use the app responsibly.\n2. Do not misuse data.\n3. Respect privacy of others.")
-                .setPositiveButton("OK", null)
-                .show()
-        }
-
-        // Privacy Policy -> Show Dialog
-        tvPrivacy.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Privacy Policy")
-                .setMessage("We value your privacy.\n\n1. We do not share your data.\n2. Your personal info is secured.\n3. You can request deletion anytime.")
-                .setPositiveButton("OK", null)
-                .show()
-        }
-
-        // Sign Out button
         btnSignOut.setOnClickListener {
+            // Clear session
+            val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+            sharedPref.edit().clear().apply()
+
+            Toast.makeText(this, "Signed out!", Toast.LENGTH_SHORT).show()
+
+            // Go back to login screen
             val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
+        }
+
+        btnSettings.setOnClickListener {
+            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        Editbtn = findViewById(R.id.Editbtn)
+
+        Editbtn.setOnClickListener {
+            // Open ProfileActivity with the current user's email
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra("email", userEmail) // pass the logged-in user email
+            startActivity(intent)
+        }
+
+    }
+
+    private fun loadUserData(email: String) {
+        val user = dbHelper.getUserByEmail(email)
+
+        if (user != null) {
+            val fullName = "${user.firstName ?: ""} ${user.lastName ?: ""}".trim()
+            tvUserName.text = if (fullName.isNotEmpty()) fullName else "Unknown User"
+            tvContactInfo.text = user.phone ?: "No phone provided"
+
+            if (user.profilePic != null) {
+                val bitmap = BitmapFactory.decodeByteArray(user.profilePic, 0, user.profilePic.size)
+                imgProfilePic.setImageBitmap(bitmap)
+            } else {
+                imgProfilePic.setImageResource(R.drawable.ic_person_placeholder)
+            }
+        } else {
+            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
         }
     }
 }

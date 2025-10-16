@@ -18,8 +18,6 @@ class DashboardActivity : AppCompatActivity() {
 
         // Play welcome Lottie animation
         findViewById<LottieAnimationView>(R.id.lottieWelcome).playAnimation()
-
-        // Animate welcome TextView
         findViewById<TextView>(R.id.tvWelcome).startAnimation(
             AnimationUtils.loadAnimation(this, R.anim.slide_up)
         )
@@ -30,12 +28,10 @@ class DashboardActivity : AppCompatActivity() {
         val cardFeedback = findViewById<MaterialCardView>(R.id.cardFeedback)
         val cardProfile = findViewById<MaterialCardView>(R.id.cardProfile)
 
-        // Apply slide-up animation to all cards
         listOf(cardHome, cardLevels, cardFeedback, cardProfile).forEach { card ->
             card.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_up))
         }
 
-        // Set click listeners
         cardHome.setOnClickListener {
             Toast.makeText(this, "Opening Tool Box...", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, PracticeActivity::class.java))
@@ -48,12 +44,19 @@ class DashboardActivity : AppCompatActivity() {
 
         cardFeedback.setOnClickListener {
             Toast.makeText(this, "Opening Feedback...", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, FeedbackActivity::class.java)) // Replace with your feedback activity
+            startActivity(Intent(this, FeedbackActivity::class.java))
         }
 
         cardProfile.setOnClickListener {
-            Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, UserDetailsActivity::class.java))
+            val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+            val email = sharedPref.getString("email", null)
+            if (email != null) {
+                val intent = Intent(this, UserDetailsActivity::class.java)
+                intent.putExtra("email", email)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No logged-in user found", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

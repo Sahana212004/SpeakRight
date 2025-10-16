@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <!-- Header -->
@@ -43,15 +44,18 @@
             android:gravity="center_horizontal">
 
             <!-- Profile Picture -->
-            <ImageView
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgProfilePic"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginTop="16dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_person_placeholder"
-                android:background="@drawable/circle_background"
-                android:contentDescription="Profile Picture" />
+                android:src="@drawable/add_person"
+                android:layout_marginBottom="24dp"
+                app:civ_border_width="3dp"
+                app:civ_border_color="#2C365A"
+                android:contentDescription="Profile Picture"/>
 
             <!-- User Name -->
             <TextView
@@ -99,6 +103,15 @@
                 android:textSize="16sp"
                 android:paddingVertical="8dp" />
 
+            <Button
+                android:id="@+id/Editbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit Profile 📝"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#2C365A"
+                android:textColor="@android:color/white" />
+
             <!-- Sign Out Button -->
             <Button
                 android:id="@+id/btnSignOut"
@@ -108,6 +121,8 @@
                 android:layout_marginTop="24dp"
                 android:backgroundTint="#2C365A"
                 android:textColor="@android:color/white" />
+
+
 
         </LinearLayout>
     </ScrollView>
