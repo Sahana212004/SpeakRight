@@ -1,107 +1,158 @@
 # app.py
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User
 from flask_cors import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-# Database config
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/Dell/SpeakRight-Backend/users.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(BASE_DIR, "users.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+db = SQLAlchemy(app)
+
+# -----------------------
+# Models
+# -----------------------
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    phone = db.Column(db.String(32), nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name or "",
+            "email": self.email,
+            "phone": self.phone or ""
+        }
+
+# Create DB
 with app.app_context():
     db.create_all()
 
-# ------------------------------
-# Signup Route
-# ------------------------------
-@app.route('/signup', methods=['POST'])
+# -----------------------
+# Helper
+# -----------------------
+def json_error(message, code=400):
+    return jsonify({"success": False, "message": message}), code
+
+# -----------------------
+# Routes
+# -----------------------
+
+@app.route("/signup", methods=["POST"])
 def signup():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    """
+    Expects JSON:
+    {
+      "name": "Sahana",
+      "email": "s@example.com",
+      "password": "secret",
+      "phone": "999..."
+    }
+    """
+    data = request.get_json(force=True, silent=True)
+    if not data:
+        return json_error("Missing JSON body", 400)
+
+    email = data.get("email")
+    password = data.get("password")
+    name = data.get("name")
+    phone = data.get("phone")
+
+    if not email or not password:
+        return json_error("email and password required", 400)
 
     if User.query.filter_by(email=email).first():
-        return jsonify({'message': 'User already exists!'}), 400
+        return json_error("User with this email already exists", 409)
 
-    new_user = User(email=email)
-    new_user.set_password(password)
-    db.session.add(new_user)
+    user = User(
+        name=name,
+        email=email,
+        password_hash=generate_password_hash(password),
+        phone=phone
+    )
+    db.session.add(user)
     db.session.commit()
 
-    return jsonify({'message': 'User registered successfully!'}), 201
+    return jsonify({"success": True, "message": "User created", "user": user.to_dict()}), 201
 
-# ------------------------------
-# Login Route
-# ------------------------------
-
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    """
+    Expects JSON:
+    {
+      "email": "s@example.com",
+      "password": "secret"
+    }
+
+    Returns user data if ok.
+    """
+    data = request.get_json(force=True, silent=True)
+    if not data:
+        return json_error("Missing JSON body", 400)
+
+    email = data.get("email")
+    password = data.get("password")
+    if not email or not password:
+        return json_error("email and password required", 400)
 
     user = User.query.filter_by(email=email).first()
-    if not user or not user.check_password(password):
-        return jsonify({'message': 'Invalid credentials'}), 401
+    if not user or not check_password_hash(user.password_hash, password):
+        return json_error("Invalid credentials", 401)
 
-    # Determine if user has filled profile
-    if not user.first_name or not user.last_name or not user.phone:
-        first_time = True
-    else:
-        first_time = False
+    return jsonify({"success": True, "message": "Login successful", "user": user.to_dict()}), 200
 
-    return jsonify({
-        'message': 'Login successful',
-        'email': user.email,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'phone': user.phone,
-        'first_time': first_time
-    }), 200
-
-# ------------------------------
-# Update Profile
-# ------------------------------
-@app.route('/update_profile', methods=['POST'])
-def update_profile():
-    data = request.get_json()
-    email = data.get('email')
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
-    phone = data.get('phone')
-
-    user = User.query.filter_by(email=email).first()
+@app.route("/user/<int:user_id>", methods=["GET"])
+def get_user(user_id):
+    user = User.query.get(user_id)
     if not user:
-        return jsonify({'message': 'User not found!'}), 404
+        return json_error("User not found", 404)
+    return jsonify({"success": True, "user": user.to_dict()}), 200
 
-    user.first_name = first_name
-    user.last_name = last_name
-    user.phone = phone
+@app.route("/profile/<int:user_id>", methods=["PUT"])
+def update_profile(user_id):
+    """
+    Expects JSON with fields to update, e.g.
+    {
+      "name": "New Name",
+      "phone": "123"
+    }
+    """
+    data = request.get_json(force=True, silent=True)
+    if not data:
+        return json_error("Missing JSON body", 400)
+
+    user = User.query.get(user_id)
+    if not user:
+        return json_error("User not found", 404)
+
+    # Only allow safe fields
+    if "name" in data:
+        user.name = data.get("name")
+    if "phone" in data:
+        user.phone = data.get("phone")
+    if "password" in data and data.get("password"):
+        user.password_hash = generate_password_hash(data.get("password"))
+
     db.session.commit()
+    return jsonify({"success": True, "message": "Profile updated", "user": user.to_dict()}), 200
 
-    return jsonify({'message': 'Profile updated successfully!'}), 200
+# Health check
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"success": True, "message": "pong"}), 200
 
-# ------------------------------
-# Get User Details
-# ------------------------------
-@app.route('/get_user', methods=['GET'])
-def get_user():
-    email = request.args.get('email')
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({'message': 'User not found!'}), 404
-
-    return jsonify({
-        'email': user.email,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'phone': user.phone
-    }), 200
-
-if __name__ == '__main__':
-    print(app.url_map)
-    app.run(host='0.0.0.0', port=5000)
+# -----------------------
+# Run
+# -----------------------
+if __name__ == "__main__":
+    # host 0.0.0.0 so Android devices/emulators can reach the dev server
+    app.run(host="0.0.0.0", port=5000, debug=True)

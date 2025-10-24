@@ -104,9 +104,9 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- FEEDBACK -->
+        <!-- My Progress -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardFeedback"
+            android:id="@+id/cardMyProgress"
             style="@style/Widget.MaterialComponents.CardView"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -125,12 +125,12 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_feedback" /> <!-- Replace with your feedback icon -->
+                    android:src="@drawable/ic_progress" /> <!-- Replace with your feedback icon -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Feedback"
+                    android:text="My Progress"
                     android:textColor="#2C3250"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp" />

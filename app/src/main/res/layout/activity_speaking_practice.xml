@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F8FF"
@@ -8,54 +8,41 @@
 
     <!-- Title -->
     <TextView
-        android:id="@+id/tvTopicTitle"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="🗣 Speaking Practice"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#2C3250"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Chat -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"/>
 
     <!-- Timer -->
     <TextView
         android:id="@+id/tvTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="03:00"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:text="01:00"
+        android:textSize="18sp"
         android:textColor="#2C3250"
-        android:layout_below="@id/tvTopicTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"/>
 
-    <!-- Topic Text -->
-    <TextView
-        android:id="@+id/tvTopic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your topic will appear here"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#2C3250"
-        android:layout_below="@id/tvTimer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:gravity="center"/>
-
-    <!-- Next Topic Button -->
+    <!-- Start Speaking Button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnNextTopic"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnSpeak"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Speaking"
-        android:textColor="@android:color/white"
-        android:layout_below="@id/tvTopic"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:backgroundTint="@color/purple_500"
-        app:cornerRadius="16dp"/>
-
-</RelativeLayout>
+        android:layout_marginTop="8dp"/>
+</LinearLayout>

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5EFFF">
+    android:background="#F5EFFF"
+    android:padding="16dp">
 
     <!-- 🔥 Streak at Top -->
     <TextView
@@ -13,16 +14,16 @@
         android:text="🔥 Streak: 0"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_margin="16dp"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
 
-    <!-- Center Section with Question -->
+    <!-- Level Title and Question Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="24dp">
 
         <!-- Level Title -->
         <TextView
@@ -32,8 +33,8 @@
             android:text="🎯 Level 1"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp"
-            android:gravity="center" />
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
 
         <!-- Question -->
         <TextView
@@ -43,41 +44,86 @@
             android:text="Sample Question"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textAlignment="center"
             android:gravity="center"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginHorizontal="16dp" />
 
-        <!-- Speech Result -->
+        <!-- Recognized Speech / Feedback -->
         <TextView
             android:id="@+id/tvSpeechResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🗣 You said: ..."
             android:textSize="16sp"
-            android:layout_marginTop="12dp"
             android:gravity="center"
-            android:textAlignment="center" />
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvCorrected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✅ Corrected Sentence"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvTips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💡 Tips"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Fluency Score -->
+        <TextView
+            android:id="@+id/tvFluency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🗣 Fluency Score: 0/100"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
 
     </LinearLayout>
 
-    <!-- Footer with Mic Button -->
+    <!-- Spacer to push buttons to bottom -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Footer with Mic Button and Next Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:gravity="center"
         android:orientation="vertical"
+        android:gravity="center"
         android:background="#F5EFFF"
-        android:elevation="8dp">
+        android:elevation="8dp"
+        android:paddingBottom="16dp">
 
         <ImageButton
             android:id="@+id/btnMic"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="#F5EFFF"
+            android:background="@drawable/round_button_bg"
             android:src="@drawable/ic_mic"
-            android:contentDescription="Start Speech Recognition" />
+            android:contentDescription="Start Speech Recognition"
+            android:layout_marginBottom="16dp"
+            android:tint="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:padding="12dp"
+            android:textSize="18sp"
+            android:backgroundTint="#6C63FF"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
 </LinearLayout>

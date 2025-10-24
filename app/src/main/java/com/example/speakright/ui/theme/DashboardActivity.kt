@@ -25,10 +25,10 @@ class DashboardActivity : AppCompatActivity() {
         // Initialize cards
         val cardHome = findViewById<MaterialCardView>(R.id.cardHome)
         val cardLevels = findViewById<MaterialCardView>(R.id.cardLevels)
-        val cardFeedback = findViewById<MaterialCardView>(R.id.cardFeedback)
+        val cardMyProgress = findViewById<MaterialCardView>(R.id.cardMyProgress)
         val cardProfile = findViewById<MaterialCardView>(R.id.cardProfile)
 
-        listOf(cardHome, cardLevels, cardFeedback, cardProfile).forEach { card ->
+        listOf(cardHome, cardLevels, cardMyProgress, cardProfile).forEach { card ->
             card.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_up))
         }
 
@@ -42,9 +42,8 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, LevelsActivity::class.java))
         }
 
-        cardFeedback.setOnClickListener {
-            Toast.makeText(this, "Opening Feedback...", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, FeedbackActivity::class.java))
+        cardMyProgress.setOnClickListener {
+            Toast.makeText(this, "Opening My Progress...", Toast.LENGTH_SHORT).show()
         }
 
         cardProfile.setOnClickListener {

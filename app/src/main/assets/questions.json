@@ -1,0 +1,17 @@
+{
+  "simple": [
+    "How are you today?",
+    "Describe your favorite hobby.",
+    "What did you do last weekend?"
+  ],
+  "medium": [
+    "Explain your daily routine in English.",
+    "Tell me about your favorite book or movie.",
+    "Describe a memorable trip you had."
+  ],
+  "complex": [
+    "Discuss the advantages and disadvantages of online education.",
+    "Explain how technology is changing communication.",
+    "Describe a challenging problem you solved and how you did it."
+  ]
+}

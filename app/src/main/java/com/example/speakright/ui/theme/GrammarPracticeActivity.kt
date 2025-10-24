@@ -1,98 +1,181 @@
 package com.example.speakright.ui.theme
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.Button
+import android.speech.tts.TextToSpeech
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.speakright.R
-import com.google.android.material.card.MaterialCardView
+import com.google.android.material.button.MaterialButton
+import java.util.*
 
-class GrammarPracticeActivity : AppCompatActivity() {
+class GrammarPracticeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
-    private lateinit var tvQuestion: TextView
-    private lateinit var btnOption1: Button
-    private lateinit var btnOption2: Button
-    private lateinit var btnOption3: Button
-    private lateinit var btnOption4: Button
-    private lateinit var btnNext: Button
+    private lateinit var tvPassage: TextView
+    private lateinit var llQuestions: LinearLayout
+    private lateinit var btnNext: MaterialButton
+    private lateinit var tts: TextToSpeech
 
-    // Sample Questions
-    private val questions = listOf(
-        Question("Choose the correct sentence:", listOf(
-            "He go to school every day.",
-            "He goes to school every day.",
-            "He going to school every day.",
-            "He gone to school every day."
-        ), correctIndex = 1),
-
-        Question("Identify the passive voice sentence:", listOf(
-            "The chef cooked the meal.",
-            "The meal is cooking.",
-            "The meal was cooked by the chef.",
-            "The chef has been cooking."
-        ), correctIndex = 2)
+    data class GrammarQuestion(
+        val mistakeText: String,
+        val options: List<String>,
+        val correctIndex: Int
     )
 
-    private var currentQuestionIndex = 0
+    data class GrammarPassage(
+        val text: String,
+        val questions: List<GrammarQuestion>
+    )
+
+    private lateinit var passages: List<GrammarPassage>
+    private var currentPassageIndex = 0
+    private var userSelections = mutableMapOf<GrammarQuestion, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grammar_practice)
 
-        tvQuestion = findViewById(R.id.tvGrammarQuestion)
-        btnOption1 = findViewById(R.id.btnOption1)
-        btnOption2 = findViewById(R.id.btnOption2)
-        btnOption3 = findViewById(R.id.btnOption3)
-        btnOption4 = findViewById(R.id.btnOption4)
-        btnNext = findViewById(R.id.btnNextGrammar)
+        tvPassage = findViewById(R.id.tvExercise)
+        llQuestions = findViewById(R.id.llOptions)
+        btnNext = findViewById(R.id.btnNext)
 
-        loadQuestion()
+        tts = TextToSpeech(this, this)
 
-        val buttons = listOf(btnOption1, btnOption2, btnOption3, btnOption4)
+        generatePassages()
+        loadPassage(currentPassageIndex)
 
-        buttons.forEachIndexed { index, button ->
-            button.setOnClickListener {
-                checkAnswer(index)
+        btnNext.setOnClickListener {
+            var correctCount = 0
+            for ((question, selected) in userSelections) {
+                if (selected == question.correctIndex) correctCount++
+            }
+
+            Toast.makeText(
+                this,
+                "You got $correctCount/${userSelections.size} correct!",
+                Toast.LENGTH_LONG
+            ).show()
+
+            currentPassageIndex++
+            if (currentPassageIndex < passages.size) {
+                loadPassage(currentPassageIndex)
+            } else {
+                Toast.makeText(this, "🎉 You completed all passages!", Toast.LENGTH_LONG).show()
+                btnNext.isEnabled = false
+            }
+        }
+    }
+
+    private fun generatePassages() {
+        // Example with 3 passages, you can expand to 30+
+        val passageList = mutableListOf<GrammarPassage>()
+
+        passageList.add(
+            GrammarPassage(
+                text = "Hi John, I hope you is doing good. I want to discuss about the new project tomorrow. Let me know if your available.",
+                questions = listOf(
+                    GrammarQuestion(
+                        "is doing good",
+                        listOf("are doing well", "is doing good", "am doing good", "be doing good"),
+                        correctIndex = 0
+                    ),
+                    GrammarQuestion(
+                        "discuss about",
+                        listOf("discuss", "discuss about", "talk about", "discussion on"),
+                        correctIndex = 0
+                    ),
+                    GrammarQuestion(
+                        "your available",
+                        listOf("you are available", "your available", "you're availability", "your being available"),
+                        correctIndex = 0
+                    )
+                )
+            )
+        )
+
+        passageList.add(
+            GrammarPassage(
+                text = "She go to school every day but she don't like math. She enjoys playing football on weekends.",
+                questions = listOf(
+                    GrammarQuestion(
+                        "go to school",
+                        listOf("goes to school", "go to school", "gone to school", "going to school"),
+                        correctIndex = 0
+                    ),
+                    GrammarQuestion(
+                        "don't like math",
+                        listOf("doesn't like math", "don't like math", "didn't liked math", "not like math"),
+                        correctIndex = 0
+                    )
+                )
+            )
+        )
+
+        passageList.add(
+            GrammarPassage(
+                text = "I am enjoy learning new languages every day. It help me to communicate better with people from other countries.",
+                questions = listOf(
+                    GrammarQuestion(
+                        "am enjoy",
+                        listOf("enjoy", "am enjoy", "is enjoying", "are enjoying"),
+                        correctIndex = 0
+                    ),
+                    GrammarQuestion(
+                        "help me",
+                        listOf("helps me", "help me", "helped me", "helping me"),
+                        correctIndex = 0
+                    )
+                )
+            )
+        )
+
+        passages = passageList.shuffled()
+    }
+
+    private fun loadPassage(index: Int) {
+        val passage = passages[index]
+        userSelections.clear()
+        btnNext.isEnabled = false
+
+        tvPassage.text = passage.text
+        llQuestions.removeAllViews()
+
+        for (question in passage.questions) {
+            val tvQ = TextView(this)
+            tvQ.text = "Select correct form for: '${question.mistakeText}'"
+            tvQ.textSize = 16f
+            tvQ.setTextColor(resources.getColor(R.color.black))
+            llQuestions.addView(tvQ)
+
+            question.options.forEachIndexed { idx, option ->
+                val btn = MaterialButton(this)
+                btn.text = option
+                btn.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 8, 0, 8) }
+
+                btn.setOnClickListener {
+                    userSelections[question] = idx
+                    // Enable Next only if all questions have selections
+                    btnNext.isEnabled = userSelections.size == passage.questions.size
+                }
+                llQuestions.addView(btn)
             }
         }
 
-        btnNext.setOnClickListener {
-            currentQuestionIndex = (currentQuestionIndex + 1) % questions.size
-            loadQuestion()
-        }
+        // Speak the passage
+        tts.speak(passage.text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
-    private fun loadQuestion() {
-        val question = questions[currentQuestionIndex]
-        tvQuestion.text = question.text
-        btnOption1.text = question.options[0]
-        btnOption2.text = question.options[1]
-        btnOption3.text = question.options[2]
-        btnOption4.text = question.options[3]
-        btnNext.isEnabled = false
-
-        animateCard(tvQuestion)
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) tts.language = Locale.US
     }
 
-    private fun checkAnswer(selectedIndex: Int) {
-        val correctIndex = questions[currentQuestionIndex].correctIndex
-        if (selectedIndex == correctIndex) {
-            Toast.makeText(this, "✅ Correct!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "❌ Incorrect!", Toast.LENGTH_SHORT).show()
-        }
-        btnNext.isEnabled = true
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.stop()
+        tts.shutdown()
     }
-
-    private fun animateCard(view: TextView) {
-        val animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
-        animator.duration = 600
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.start()
-    }
-
-    data class Question(val text: String, val options: List<String>, val correctIndex: Int)
 }

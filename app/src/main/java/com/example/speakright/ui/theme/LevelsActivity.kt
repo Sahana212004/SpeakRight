@@ -20,9 +20,9 @@ class LevelsActivity : AppCompatActivity() {
 
 
         val levelCards = listOf(
-            R.id.cardSimple to "Simple",
-            R.id.cardMedium to "Medium",
-            R.id.cardComplex to "Complex"
+            R.id.cardSimple to "simple",
+            R.id.cardMedium to "medium",
+            R.id.cardComplex to "complex"
         )
 
         for ((cardId, levelName) in levelCards) {
