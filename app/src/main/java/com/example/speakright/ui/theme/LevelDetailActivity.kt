@@ -11,13 +11,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.speakright.R
-import okhttp3.*
+import com.example.speakright.network.AnalysisResponse
+import com.example.speakright.network.RetrofitClient
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
-import kotlin.concurrent.thread
 
 class LevelDetailActivity : AppCompatActivity() {
 
@@ -38,7 +43,6 @@ class LevelDetailActivity : AppCompatActivity() {
     private var audioFilePath: String? = null
     private var isRecording = false
 
-    private val flaskUrl = "http://192.168.0.143:5000/analyze" // Flask server
     private val REQUEST_RECORD_AUDIO_PERMISSION = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,11 +61,14 @@ class LevelDetailActivity : AppCompatActivity() {
         val levelFromIntent = intent.getStringExtra("LEVEL_NAME")?.lowercase() ?: "simple"
         setLevel(levelFromIntent)
 
-        // Request permission to record audio
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_RECORD_AUDIO_PERMISSION)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.RECORD_AUDIO),
+            REQUEST_RECORD_AUDIO_PERMISSION
+        )
 
         btnMic.setOnClickListener {
-            if (!isRecording) startRecording() else stopRecordingAndSend()
+            if (!isRecording) startRecording() else stopRecordingAndAnalyze()
         }
 
         btnNext.setOnClickListener { nextQuestion() }
@@ -103,19 +110,26 @@ class LevelDetailActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_RECORD_AUDIO_PERMISSION)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.RECORD_AUDIO),
+                REQUEST_RECORD_AUDIO_PERMISSION
+            )
             return
         }
 
         val dir = getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-        val audioFile = File(dir, "speech_${System.currentTimeMillis()}.wav")
+        val audioFile = File(dir, "speech_${System.currentTimeMillis()}.m4a")
         audioFilePath = audioFile.absolutePath
 
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-            setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setAudioEncodingBitRate(128000)
+            setAudioSamplingRate(44100)
             setOutputFile(audioFilePath)
+
             try {
                 prepare()
                 start()
@@ -128,7 +142,7 @@ class LevelDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun stopRecordingAndSend() {
+    private fun stopRecordingAndAnalyze() {
         try {
             recorder?.apply {
                 stop()
@@ -137,53 +151,47 @@ class LevelDetailActivity : AppCompatActivity() {
             recorder = null
             isRecording = false
             tvSpeechResult.text = "✅ Recording saved!"
-            audioFilePath?.let { filePath ->
-                val file = File(filePath)
-                if (file.exists()) sendAudioToFlask(file)
-                else Toast.makeText(this, "❌ Audio file not found!", Toast.LENGTH_SHORT).show()
+
+            audioFilePath?.let { path ->
+                val file = File(path)
+                if (file.exists()) {
+                    analyzeSpeechWithRetrofit(file)
+                } else {
+                    Toast.makeText(this, "❌ Audio file not found!", Toast.LENGTH_SHORT).show()
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun sendAudioToFlask(file: File) {
-        thread {
-            try {
-                val client = OkHttpClient()
-                val fileBody = file.asRequestBody("audio/wav".toMediaTypeOrNull())
-                val requestBody = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("audio", file.name, fileBody)
-                    .addFormDataPart("expected_text", currentQuestions[currentQuestionIndex])
-                    .build()
+    private fun analyzeSpeechWithRetrofit(file: File) {
+        val audioPart = MultipartBody.Part.createFormData(
+            "audio", file.name, file.asRequestBody("audio/wav".toMediaTypeOrNull())
+        )
+        val textPart = RequestBody.create("text/plain".toMediaTypeOrNull(), currentQuestions[currentQuestionIndex])
 
-                val request = Request.Builder()
-                    .url(flaskUrl)
-                    .post(requestBody)
-                    .build()
-
-                val response = client.newCall(request).execute()
-                val responseBody = response.body?.string()
-
-                runOnUiThread {
-                    if (response.isSuccessful && responseBody != null) {
-                        val jsonResponse = JSONObject(responseBody)
-                        tvSpeechResult.text = "🗣 You said: ${jsonResponse.optString("transcript")}"
-                        tvCorrected.text = "✅ Corrected: ${jsonResponse.optString("corrected_sentence")}"
-                        tvTips.text = "💡 Tips: ${jsonResponse.optString("tips")}"
-                        tvFluency.text = "🗣 Fluency Score: ${jsonResponse.optDouble("fluency_score", 0.0)}"
+        RetrofitClient.apiService.analyzeSpeech(audioPart, textPart)
+            .enqueue(object : Callback<AnalysisResponse> {
+                override fun onResponse(call: Call<AnalysisResponse>, response: Response<AnalysisResponse>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val result = response.body()!!
+                        tvSpeechResult.text = "🗣 You said: ${result.recognized_text}"
+                        tvCorrected.text = "✅ Pronunciation: ${result.pronunciation_score}/100"
+                        tvFluency.text = "💬 Fluency: ${result.fluency_score}/100\n🧠 Grammar: ${result.grammar_score}/100"
+                        tvTips.text = "💡 Feedback: ${result.feedback}"
                     } else {
-                        Toast.makeText(this, "❌ Server error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LevelDetailActivity, "❌ Server error", Toast.LENGTH_SHORT).show()
+                        Log.e("AnalyzeError", "Error: ${response.errorBody()?.string()}")
                     }
                 }
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this, "⚠️ Error: ${e.message}", Toast.LENGTH_LONG).show()
+                override fun onFailure(call: Call<AnalysisResponse>, t: Throwable) {
+                    Toast.makeText(this@LevelDetailActivity, "⚠️ Network error: ${t.message}", Toast.LENGTH_LONG).show()
+                    Log.e("AnalyzeError", "Failure: ${t.message}")
                 }
-            }
-        }
+            })
     }
+
 }

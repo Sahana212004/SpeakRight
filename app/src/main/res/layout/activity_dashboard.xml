@@ -48,13 +48,16 @@
             android:layout_margin="10dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/transparent"
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
+                android:background="@drawable/bg_home"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -81,13 +84,16 @@
             android:layout_margin="10dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/transparent"
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
+                android:background="@drawable/bg_levels"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -114,18 +120,21 @@
             android:layout_margin="10dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/transparent"
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
+                android:background="@drawable/bg_progress"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_progress" /> <!-- Replace with your feedback icon -->
+                    android:src="@drawable/ic_progress" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -147,13 +156,16 @@
             android:layout_margin="10dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/transparent"
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
+                android:background="@drawable/bg_profile"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"

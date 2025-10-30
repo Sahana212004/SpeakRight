@@ -9,4 +9,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="logo_color">#2596BE</color>
     <color name="red_200">#FFCDD2</color>
+    <color name="background_light">#F4F7FF</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="primary_gradient_start">#6A11CB</color>
+    <color name="primary_gradient_end">#2575FC</color>
+    <color name="accent_pink">#FF6584</color>
+    <color name="accent_green">#4ADE80</color>
+    <color name="accent_yellow">#FFD93D</color>
+    <color name="text_primary">#2C3250</color>
 </resources>

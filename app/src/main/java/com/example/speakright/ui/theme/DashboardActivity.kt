@@ -43,7 +43,7 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         cardMyProgress.setOnClickListener {
-            Toast.makeText(this, "Opening My Progress...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Opening progress...", Toast.LENGTH_SHORT).show()
         }
 
         cardProfile.setOnClickListener {

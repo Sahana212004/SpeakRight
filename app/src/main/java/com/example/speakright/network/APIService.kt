@@ -1,33 +1,24 @@
+package com.example.speakright.network
+
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
-data class UserRequest(
-    val email: String,
-    val password: String? = null,
-    val first_name: String? = null,
-    val last_name: String? = null,
-    val phone: String? = null
-)
-
-data class UserResponse(
-    val message: String,
-    val email: String? = null,
-    val first_name: String? = null,
-    val last_name: String? = null,
-    val phone: String? = null
+data class AnalysisResponse(
+    val recognized_text: String,
+    val pronunciation_score: Double,
+    val fluency_score: Double,
+    val grammar_score: Double,
+    val total_score: Double,
+    val feedback: String
 )
 
 interface ApiService {
-
-    @POST("/signup")
-    fun signup(@Body request: UserRequest): Call<UserResponse>
-
-    @POST("/login")
-    fun login(@Body request: UserRequest): Call<UserResponse>
-
-    @POST("/update_profile")
-    fun updateProfile(@Body request: UserRequest): Call<UserResponse>
-
-    @GET("/get_user")
-    fun getUser(@Query("email") email: String): Call<UserResponse>
+    @Multipart
+    @POST("/analyze")
+    fun analyzeSpeech(
+        @Part audio: MultipartBody.Part,
+        @Part("text") text: RequestBody
+    ): Call<AnalysisResponse>
 }

@@ -5,7 +5,7 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F6F8FF"
+    android:background="@drawable/bg_gradient"
     android:padding="16dp">
 
     <!-- Title -->
@@ -14,10 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Your Level 🎯"
-        android:textSize="22sp"
+        android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="#2C3250"
-        android:layout_marginBottom="30dp" />
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="40dp" />
 
     <!-- Cards Container -->
     <LinearLayout
@@ -33,26 +34,29 @@
             android:layout_width="250dp"
             android:layout_height="120dp"
             android:layout_marginBottom="20dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="18dp"
             app:cardElevation="8dp"
-            android:foreground="?android:attr/selectableItemBackground">
+            app:cardBackgroundColor="@android:color/transparent">
 
+            <!-- Put background here (inner layout, not on card) -->
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_simple"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_easy" /> <!-- Replace with your icon -->
+                    android:src="@drawable/ic_easy" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Simple"
-                    android:textColor="#2C3250"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp" />
             </LinearLayout>
@@ -65,26 +69,28 @@
             android:layout_width="250dp"
             android:layout_height="120dp"
             android:layout_marginBottom="20dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="18dp"
             app:cardElevation="8dp"
-            android:foreground="?android:attr/selectableItemBackground">
+            app:cardBackgroundColor="@android:color/transparent">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_medium"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_medium" /> <!-- Replace with your icon -->
+                    android:src="@drawable/ic_medium" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Medium"
-                    android:textColor="#2C3250"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp" />
             </LinearLayout>
@@ -96,31 +102,32 @@
             style="@style/Widget.MaterialComponents.CardView"
             android:layout_width="250dp"
             android:layout_height="120dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="18dp"
             app:cardElevation="8dp"
-            android:foreground="?android:attr/selectableItemBackground">
+            app:cardBackgroundColor="@android:color/transparent">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_complex"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_complex" /> <!-- Replace with your icon -->
+                    android:src="@drawable/ic_complex" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Complex"
-                    android:textColor="#2C3250"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
 </LinearLayout>
