@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6f87ff73a1067266988b5e9a0a4abfdf",
+    "identityHash": "71776552682a2b08efeba19e768b01f2",
     "entities": [
       {
-        "tableName": "LearnedWord",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `word` TEXT NOT NULL, `meaning` TEXT NOT NULL)",
+        "tableName": "learned_words",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `word` TEXT NOT NULL, `meaning` TEXT NOT NULL, `dateLearned` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,6 +25,12 @@
             "columnName": "meaning",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "dateLearned",
+            "columnName": "dateLearned",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -40,7 +46,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f87ff73a1067266988b5e9a0a4abfdf')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '71776552682a2b08efeba19e768b01f2')"
     ]
   }
 }

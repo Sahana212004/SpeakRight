@@ -43,7 +43,6 @@ class PronunciationPracticeActivity : AppCompatActivity(), TextToSpeech.OnInitLi
         btnNext = findViewById(R.id.btnNext)
         etSearch = findViewById(R.id.etSearch)
         btnSearch = findViewById(R.id.btnSearch)
-        btnLearned = findViewById(R.id.btnLearned)
 
         tts = TextToSpeech(this, this)
 
@@ -86,10 +85,6 @@ class PronunciationPracticeActivity : AppCompatActivity(), TextToSpeech.OnInitLi
             } else {
                 Toast.makeText(this, "Please enter a word!", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        btnLearned.setOnClickListener {
-            startActivity(Intent(this, LearnedWordsActivity::class.java))
         }
     }
 

@@ -181,6 +181,18 @@ class LevelDetailActivity : AppCompatActivity() {
                         tvCorrected.text = "✅ Pronunciation: ${result.pronunciation_score}/100"
                         tvFluency.text = "💬 Fluency: ${result.fluency_score}/100\n🧠 Grammar: ${result.grammar_score}/100"
                         tvTips.text = "💡 Feedback: ${result.feedback}"
+
+                        try {
+                            val db = com.example.speakright.data.ProgressDatabaseHelper(this@LevelDetailActivity)
+                            db.insertProgress(
+                                result.pronunciation_score,
+                                result.fluency_score,
+                                result.grammar_score
+                            )
+                            Log.d("DB_SAVE", "Scores saved successfully")
+                        } catch (e: Exception) {
+                            Log.e("DB_SAVE", "Failed to save scores: ${e.message}")
+                        }
                     } else {
                         Toast.makeText(this@LevelDetailActivity, "❌ Server error", Toast.LENGTH_SHORT).show()
                         Log.e("AnalyzeError", "Error: ${response.errorBody()?.string()}")

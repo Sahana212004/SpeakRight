@@ -18,7 +18,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        viewBinding = true
+        compose = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -38,9 +41,6 @@ android {
         jvmTarget = "11"
     }
 
-    buildFeatures {
-        compose = true
-    }
 
     // ✅ Room kapt settings for schema + incremental builds
     kapt {
@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 
     // --- Navigation & UI ---
     implementation("androidx.navigation:navigation-compose:2.8.0")

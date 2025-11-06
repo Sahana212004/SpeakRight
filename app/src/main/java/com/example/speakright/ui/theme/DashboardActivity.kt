@@ -43,7 +43,8 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         cardMyProgress.setOnClickListener {
-            Toast.makeText(this, "Opening progress...", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ProgressActivity::class.java)
+            startActivity(intent)
         }
 
         cardProfile.setOnClickListener {

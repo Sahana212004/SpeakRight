@@ -67,13 +67,4 @@
         android:layout_marginTop="20dp"
         android:enabled="false" />
 
-    <Button
-        android:id="@+id/btnLearned"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="📚 View Learned Words"
-        android:layout_below="@id/btnNext"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
-
 </RelativeLayout>

@@ -88,7 +88,9 @@
             android:name=".ui.theme.GrammarPracticeActivity"
             android:theme="@style/Theme.SpeakRight.Material" />
 
-        <activity android:name=".ui.theme.LearnedWordsActivity" />
+        <activity
+            android:name=".ui.theme.ProgressActivity"
+            android:theme="@style/Theme.SpeakRight.Material" />
 
     </application>
 </manifest>
