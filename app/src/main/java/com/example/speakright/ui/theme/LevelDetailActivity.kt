@@ -83,7 +83,16 @@ class LevelDetailActivity : AppCompatActivity() {
     private fun setLevel(level: String) {
         currentLevel = level
         val jsonArray = allQuestions.optJSONArray(level)
-        currentQuestions = List(jsonArray.length()) { i -> jsonArray.getString(i) }
+        // Convert JSON array to list
+        val allQuestionsList = MutableList(jsonArray.length()) { i -> jsonArray.getString(i) }
+
+        // Shuffle to randomize
+        allQuestionsList.shuffle()
+
+        // 🔹 Optional: pick only a few questions (e.g., 10 per session)
+        currentQuestions = allQuestionsList.take(10)
+
+        // Start with the first question
         currentQuestionIndex = 0
         tvQuestion.text = currentQuestions[currentQuestionIndex]
         clearResults()
@@ -95,7 +104,7 @@ class LevelDetailActivity : AppCompatActivity() {
             tvQuestion.text = currentQuestions[currentQuestionIndex]
             clearResults()
         } else {
-            Toast.makeText(this, "🎉 You finished all $currentLevel questions!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, " You finished all $currentLevel questions!", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -177,10 +186,10 @@ class LevelDetailActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<AnalysisResponse>, response: Response<AnalysisResponse>) {
                     if (response.isSuccessful && response.body() != null) {
                         val result = response.body()!!
-                        tvSpeechResult.text = "🗣 You said: ${result.recognized_text}"
-                        tvCorrected.text = "✅ Pronunciation: ${result.pronunciation_score}/100"
-                        tvFluency.text = "💬 Fluency: ${result.fluency_score}/100\n🧠 Grammar: ${result.grammar_score}/100"
-                        tvTips.text = "💡 Feedback: ${result.feedback}"
+                        tvSpeechResult.text = " You said: ${result.recognized_text}"
+                        tvCorrected.text = " Pronunciation: ${result.pronunciation_score}/100"
+                        tvFluency.text = " Fluency: ${result.fluency_score}/100\n Grammar: ${result.grammar_score}/100"
+                        tvTips.text = " Feedback: ${result.feedback}"
 
                         try {
                             val db = com.example.speakright.data.ProgressDatabaseHelper(this@LevelDetailActivity)
